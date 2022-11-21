@@ -2,7 +2,7 @@ import drivermodel
 
 tp = 100
 tc = 70
-tm = 70
+tm = 7
 # response times in ms
 def start():
     return 0
