@@ -3,14 +3,42 @@ import drivermodel
 tp = 100
 tc = 70
 tm = 70
+
 # response times in ms
 def start():
     return 0
-def perceptualstep():
-    return tp
-def cognitivestep():
-    return tc
-def motorstep():
+def perceptualstep(x):
+    result = 0 
+
+    # if slow
+    if(x =="slow"):
+        result +=200
+    elif(x =="fast"):
+        result +=50
+    else:
+        result +=100
+
+
+    return result
+def cognitivestep(x):
+    result = 0
+    # if slow
+    if(x =="slow"):
+        result +=170
+    elif(x =="fast"):
+        result +=25
+    else:
+        result +=70
+    return result
+def motorstep(x):
+    result = 0
+    # if slow
+    if(x =="slow"):
+        result +=100
+    elif(x =="fast"):
+        result +=30
+    else:
+        result +=70
     return tm
 
 
@@ -22,12 +50,13 @@ def example1():
 
     # step 2:peceptial process takes place (arrows around the pecetial process)
     # a is stored in the visual working memory (a')  and an impression of that os om the working memory a''
-    t += perceptualstep()
+    t += perceptualstep("middle")
 
     # step 3: cognitive process takes place prepares motor action and yess was diceded
-    t += cognitivestep()
+    t += cognitivestep("middle")
     # step 4: motor function is executed (presses)
-    t += motorstep()
+    t += motorstep("")
     return t
+
 
 print(str(example1())+ "ms")
