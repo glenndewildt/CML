@@ -1,5 +1,5 @@
-import drivermodel
-import matplotlib.pyplot as plt
+#import drivermodel
+#import matplotlib.pyplot as plt
 
 tp = 100
 tc = 70
@@ -119,10 +119,10 @@ def example3(x, y, z):
 
 def example4(x, y, z, delay):
     a = [40, 80, 110, 150, 210, 240]
-    if delay in a:
+    if delay in a and delay > perceptualstep(x):
         t1 = start()
         t1 += perceptualstep(x)
-        t1 += delay
+        t1 += delay - perceptualstep(x)
         t1 += perceptualstep(x)
         t1 += cognitivestep(y)
         t1 += cognitivestep(y)
@@ -132,7 +132,7 @@ def example4(x, y, z, delay):
       
 
 
-print(example2("all"))
-plt.boxplot(example2("all"))
-plt.show()
+#print(example2("all"))
+#plt.boxplot(example2("all"))
+#plt.show()
 print(example4("fast", "fast", "slow", 210))
