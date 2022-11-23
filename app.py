@@ -107,11 +107,20 @@ def example2(x):
                     result.append(f + m + s)
         return result
 
+def example3(x, y, z):
+    t1 = start()
+    t1 += perceptualstep(x)
+    t1 += perceptualstep(x)
+    t1 += cognitivestep(y)
+    t1 += cognitivestep(y)
+    t1 += motorstep(z)
+
+    return t1
 
       
-
 
 
 print(example2("all"))
 plt.boxplot(example2("all"))
 plt.show()
+print(example3("fast", "fast", "slow"))
