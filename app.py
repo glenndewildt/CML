@@ -153,8 +153,11 @@ def example5():
                     if test1 == "fast":
                         error = error * 3
                 result1.append(t1)
+                error = error * 100
                 result2.append(error)
     plt.scatter(result1, result2)
+    plt.xlabel("Time (in ms)")
+    plt.ylabel("Error (in %)")
     plt.show()
     return result1, result2
 
