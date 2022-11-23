@@ -117,10 +117,22 @@ def example3(x, y, z):
 
     return t1
 
+def example4(x, y, z, delay):
+    a = [40, 80, 110, 150, 210, 240]
+    if delay in a:
+        t1 = start()
+        t1 += perceptualstep(x)
+        t1 += delay
+        t1 += perceptualstep(x)
+        t1 += cognitivestep(y)
+        t1 += cognitivestep(y)
+        t1 += motorstep(z)
+        return t1
+
       
 
 
 print(example2("all"))
 plt.boxplot(example2("all"))
 plt.show()
-print(example3("fast", "fast", "slow"))
+print(example4("fast", "fast", "slow", 210))
