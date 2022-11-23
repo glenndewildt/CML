@@ -1,5 +1,5 @@
-#import drivermodel
-#import matplotlib.pyplot as plt
+import drivermodel
+import matplotlib.pyplot as plt
 
 tp = 100
 tc = 70
@@ -105,6 +105,8 @@ def example2(x):
             for m in middle_array:
                 for s in slow_array:
                     result.append(f + m + s)
+        plt.boxplot(result)
+        plt.show()
         return result
 
 def example3(x, y, z):
@@ -129,10 +131,35 @@ def example4(x, y, z, delay):
         t1 += motorstep(z)
         return t1
 
+def example5():
+    type = ["fast", "middle", "slow"]
+    result1 = []
+    result2 = []
+    for x in type:
+        for y in type:
+            for z in type:
+                error = 0.01
+                t1 = start()
+                t1 += perceptualstep(x)
+                t1 += perceptualstep(x)
+                t1 += cognitivestep(y)
+                t1 += cognitivestep(y)
+                t1 += motorstep(z)
+                for test1 in {x, x, y, y, z}:
+                    if test1 == "middle":
+                        error = error * 2
+                    if test1 == "slow":
+                        error = error * 0.5
+                    if test1 == "fast":
+                        error = error * 3
+                result1.append(t1)
+                result2.append(error)
+    plt.scatter(result1, result2)
+    plt.show()
+
       
 
 
 #print(example2("all"))
-#plt.boxplot(example2("all"))
-#plt.show()
-print(example4("fast", "fast", "slow", 210))
+#print(example4("fast", "fast", "slow", 210))
+example5()
