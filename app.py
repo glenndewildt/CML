@@ -1,4 +1,5 @@
 import drivermodel
+import matplotlib.pyplot as plt
 
 tp = 100
 tc = 70
@@ -112,4 +113,5 @@ def example2(x):
 
 
 print(example2("all"))
-
+plt.boxplot(example2("all"))
+plt.show()
