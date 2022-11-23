@@ -156,10 +156,11 @@ def example5():
                 result2.append(error)
     plt.scatter(result1, result2)
     plt.show()
+    return result1, result2
 
       
 
 
 #print(example2("all"))
 #print(example4("fast", "fast", "slow", 210))
-example5()
+print(example5())
