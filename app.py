@@ -166,4 +166,9 @@ def example5():
 
 #print(example2("all"))
 #print(example4("fast", "fast", "slow", 210))
-print(example5())
+#print(example5())
+
+drivermodel.runSimulations()
+print(drivermodel.drifts)
+print(drivermodel.trailTime)
+print(drivermodel.trailTime / 50)

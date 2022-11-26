@@ -23,7 +23,8 @@ import numpy
 ###
 ###
 
-
+trailTime = 0
+drifts = 0
 ###
 ### Car / driving related parameters
 ###
@@ -67,6 +68,8 @@ wordsPerMinuteSD = 10.3 ## this si standard deviation (Jiang et al, 2020)
 
 ## Function to reset all parameters. Call this function at the start of each simulated trial. Make sure to reset GLOBAL parameters.
 def resetParameters():
+    global trailTime 
+    global drifts 
     global timePerWord
     global retrievalTimeWord
     global retrievalTimeSentence 
@@ -82,6 +85,9 @@ def resetParameters():
     global startvelocity
     global wordsPerMinuteMean
     global wordsPerMinuteSD
+
+    trailTime = 0
+    drifts = 0
     
     timePerWord = 0  ### ms
 
@@ -159,12 +165,73 @@ def vehicleUpdateNotSteering():
 
 
 
+# function that handles the drifts , parms: trailTime, IocDrift,  return : IocDrift
+def handleDrift(trailTime, IocDrift):
+        global driftTimes
+        global timeStepPerDriftUpdate
+
+        driftTimes = round(trailTime, 0) / timeStepPerDriftUpdate
+        differenceDrift = driftTimes - drifts
+        differenceDrift =  int(round(differenceDrift, 0))
+        print(differenceDrift)
+        if differenceDrift > 0:
+            #foreach 50ms 
+            for x in range(differenceDrift):
+                #update the IocDrift with  
+                IocDrift.append(vehicleUpdateNotSteering())
+
+
+
+
+
+
 
 ### Function to run a trial. Needs to be defined by students (section 2 and 3 of assignment)
 
-def runTrial(nrWordsPerSentence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"): 
+def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"): 
+    resetParameters()
+    IocDrift = []
+    global trailTime
+    global startvelocity
 
-    print("hello world")
+
+    # set times per word
+    timePerWord = wordsPerMinuteMean / 60000
+    print(timePerWord)
+    #check if stratagy is word
+    if interleaving == "word":
+        #loop through all the sentences
+        for  o,s in  enumerate(range(nrSentences)):
+            # add time for retieving a sentce
+            trailTime += retrievalTimeSentence
+            handleDrift(trailTime, IocDrift)
+            endSentence = False
+            if i ==  nrWordsPerSenteInitiatence:
+                endSentence = True
+
+
+            #loop trough all the words
+            for i, w in enumerate(range(nrWordsPerSenteInitiatence)):
+                #add time for retrieving word
+                trailTime += retrievalTimeWord
+                handleDrift(trailTime, IocDrift)
+                #add time for typing a word
+                trailTime += timePerWord
+                handleDrift(trailTime, IocDrift)
+                # if not add the end update stering
+                if i <  nrWordsPerSenteInitiatence and endSentence:
+                    for s in nrSteeringMovementsWhenSteering:
+                        trailTime += steeringUpdateTime
+                        startvelocity += vehicleUpdateActiveSteering()
+                
+                        
+
+
+
+
+
+
+
 
 	
 	
@@ -175,7 +242,8 @@ def runTrial(nrWordsPerSentence =5,nrSentences=3,nrSteeringMovementsWhenSteering
 
 ### function to run multiple simulations. Needs to be defined by students (section 3 of assignment)
 def runSimulations(nrSims = 100):
-    print("hello world")
+    runTrial(5,3,2,"word")
+
 
 
 
