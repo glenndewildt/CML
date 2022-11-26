@@ -182,10 +182,6 @@ def handleDrift(trailTime, IocDrift):
 
 
 
-
-
-
-
 ### Function to run a trial. Needs to be defined by students (section 2 and 3 of assignment)
 
 def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"): 
@@ -206,7 +202,7 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
             trailTime += retrievalTimeSentence
             handleDrift(trailTime, IocDrift)
             endSentence = False
-            if i ==  nrWordsPerSenteInitiatence:
+            if o ==  nrWordsPerSenteInitiatence:
                 endSentence = True
 
 
