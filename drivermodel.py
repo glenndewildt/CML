@@ -245,7 +245,29 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 def runSimulations(nrSims = 100):
     runTrial(5,3,2,"word")
 
-
+#import math
+# 
+# def runTrial(nrWordsPerSentence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"):
+#  resetParameters()
+#  locDrifts
+#  trialTime = 0
+#  if interleaving == "word":
+#    trialTime = 0
+#    vehiclePosition = startingPositionInLane
+#    WPM = np.random.normal(loc=39.33, scale=10.3)
+#    timePerWord = 60/WPM * 1000
+#    x = 0
+#    y = 0
+#    while x < nrSentences:
+#      while y < nrWordsPerSentence:
+#        trialTime += timePerWord + retrievalTimeWord
+#        if y == 0:
+#          trialTime += retrievalTimeSentence
+#        updates = math.floor(trialTime/50)    
+#     
+#        y += 1
+#      x += 1
+#      y = 0
 
 
 	
