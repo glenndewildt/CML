@@ -23,7 +23,7 @@ import numpy
 ###
 ###
 
-trailTime = 0
+trialTime = 0
 drifts = 0
 ###
 ### Car / driving related parameters
@@ -68,7 +68,7 @@ wordsPerMinuteSD = 10.3 ## this si standard deviation (Jiang et al, 2020)
 
 ## Function to reset all parameters. Call this function at the start of each simulated trial. Make sure to reset GLOBAL parameters.
 def resetParameters():
-    global trailTime 
+    global trialTime 
     global drifts 
     global timePerWord
     global retrievalTimeWord
@@ -86,7 +86,7 @@ def resetParameters():
     global wordsPerMinuteMean
     global wordsPerMinuteSD
 
-    trailTime = 0
+    trialTime = 0
     drifts = 0
     
     timePerWord = 0  ### ms
@@ -165,12 +165,12 @@ def vehicleUpdateNotSteering():
 
 
 
-# function that handles the drifts , parms: trailTime, IocDrift,  return : IocDrift
-def handleDrift(trailTime, IocDrift):
+# function that handles the drifts , parms: trialTime, IocDrift,  return : IocDrift
+def handleDrift(trialTime, IocDrift):
         global driftTimes
         global timeStepPerDriftUpdate
 
-        driftTimes = round(trailTime, 0) / timeStepPerDriftUpdate
+        driftTimes = round(trialTime, 0) / timeStepPerDriftUpdate
         differenceDrift = driftTimes - drifts
         differenceDrift =  int(round(differenceDrift, 0))
         print(differenceDrift)
@@ -187,20 +187,21 @@ def handleDrift(trailTime, IocDrift):
 def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"): 
     resetParameters()
     IocDrift = []
-    global trailTime
+    global trialTime
     global startvelocity
 
 
     # set times per word
-    timePerWord = wordsPerMinuteMean / 60000
+    WPM = numpy.random.normal(loc=39.33, scale=10.3)
+    timePerWord = 60/WPM * 1000
     print(timePerWord)
     #check if stratagy is word
     if interleaving == "word":
         #loop through all the sentences
         for  o,s in  enumerate(range(nrSentences)):
             # add time for retieving a sentce
-            trailTime += retrievalTimeSentence
-            handleDrift(trailTime, IocDrift)
+            trialTime += retrievalTimeSentence
+            handleDrift(trialTime, IocDrift)
             endSentence = False
             if o ==  nrWordsPerSenteInitiatence:
                 endSentence = True
@@ -209,15 +210,15 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
             #loop trough all the words
             for i, w in enumerate(range(nrWordsPerSenteInitiatence)):
                 #add time for retrieving word
-                trailTime += retrievalTimeWord
-                handleDrift(trailTime, IocDrift)
+                trialTime += retrievalTimeWord
+                handleDrift(trialTime, IocDrift)
                 #add time for typing a word
-                trailTime += timePerWord
-                handleDrift(trailTime, IocDrift)
+                trialTime += timePerWord
+                handleDrift(trialTime, IocDrift)
                 # if not add the end update stering
                 if i <  nrWordsPerSenteInitiatence and endSentence:
                     for s in nrSteeringMovementsWhenSteering:
-                        trailTime += steeringUpdateTime
+                        trialTime += steeringUpdateTime
                         startvelocity += vehicleUpdateActiveSteering()
                 
                         
@@ -240,7 +241,42 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 def runSimulations(nrSims = 100):
     runTrial(5,3,2,"word")
 
+def runTrial(nrWordsPerSentence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"):
+  resetParameters()
+  locDrifts = []
+  trialTime = 0
+  if interleaving == "word":
+    trialTime = 0
+    vehiclePosition = startingPositionInLane
+    WPM = numpy.random.normal(loc=39.33, scale=10.3)
+    timePerWord = 60/WPM * 1000
+    x = 0
+    y = 0
+    while x < nrSentences:
+      while y < nrWordsPerSentence:
+        trialTime += timePerWord + retrievalTimeWord
+        if y == 0:
+          trialTime += retrievalTimeSentence
+        updates = math.floor(trialTime/50)
+        while updates > 0:
+          change = vehicleUpdateNotSteering()
+          locDrifts.append(change)
+          vehiclePosition += change/20
+          updates -= 1
+          
+        if x != nrSentences and y != nrWordsPerSentence:
+          z = 0
+          while z < nrSteeringMovementsWhenSteering:              
+            change = vehicleUpdateActiveSteering(vehiclePosition)
+            if vehiclePosition > 0:
+              vehiclePosition -= change/4
+            else:
+              vehiclePosition += change/4
+            trialTime += 250
 
+        y += 1
+      x += 1
+      y = 0
 
 
 	
