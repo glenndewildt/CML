@@ -245,29 +245,42 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 def runSimulations(nrSims = 100):
     runTrial(5,3,2,"word")
 
-#import math
-# 
-# def runTrial(nrWordsPerSentence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"):
-#  resetParameters()
-#  locDrifts
-#  trialTime = 0
-#  if interleaving == "word":
-#    trialTime = 0
-#    vehiclePosition = startingPositionInLane
-#    WPM = np.random.normal(loc=39.33, scale=10.3)
-#    timePerWord = 60/WPM * 1000
-#    x = 0
-#    y = 0
-#    while x < nrSentences:
-#      while y < nrWordsPerSentence:
-#        trialTime += timePerWord + retrievalTimeWord
-#        if y == 0:
-#          trialTime += retrievalTimeSentence
-#        updates = math.floor(trialTime/50)    
-#     
-#        y += 1
-#      x += 1
-#      y = 0
+def runTrial(nrWordsPerSentence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"):
+  resetParameters()
+  locDrifts = []
+  trialTime = 0
+  if interleaving == "word":
+    trialTime = 0
+    vehiclePosition = startingPositionInLane
+    WPM = numpy.random.normal(loc=39.33, scale=10.3)
+    timePerWord = 60/WPM * 1000
+    x = 0
+    y = 0
+    while x < nrSentences:
+      while y < nrWordsPerSentence:
+        trialTime += timePerWord + retrievalTimeWord
+        if y == 0:
+          trialTime += retrievalTimeSentence
+        updates = math.floor(trialTime/50)
+        while updates > 0:
+          change = vehicleUpdateNotSteering()
+          locDrifts.append(change)
+          vehiclePosition += change/20
+          updates -= 1
+          
+        if x != nrSentences and y != nrWordsPerSentence:
+          z = 0
+          while z < nrSteeringMovementsWhenSteering:              
+            change = vehicleUpdateActiveSteering(vehiclePosition)
+            if vehiclePosition > 0:
+              vehiclePosition -= change/4
+            else:
+              vehiclePosition += change/4
+            trialTime += 250
+
+        y += 1
+      x += 1
+      y = 0
 
 
 	
