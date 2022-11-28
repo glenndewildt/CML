@@ -173,7 +173,6 @@ def handleDrift(trailTime, IocDrift, autoPostition):
         driftTimes = math.floor(trailTime / timeStepPerDriftUpdate)
         differenceDrift = driftTimes - drifts
         differenceDrift =  int(round(differenceDrift, 0))
-        print(differenceDrift)
         if differenceDrift > 0:
             #foreach 50ms 
             for x in range(differenceDrift):
@@ -181,7 +180,7 @@ def handleDrift(trailTime, IocDrift, autoPostition):
                 update = vehicleUpdateNotSteering()
                 update = update / 20
                 autoPostition += update
-                IocDrift.append(update)
+                IocDrift.append(autoPostition)
                 driftTimes += 1
 
 
@@ -201,21 +200,23 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
     WPM = numpy.random.normal(loc=39.33, scale=10.3)
 
     timePerWord = 60 / WPM * 1000
-    print(timePerWord)
     #check if stratagy is word
     if interleaving == "word":
         #loop through all the sentences
-        for  o,s in  enumerate(range(nrSentences)):
+        o = 0
+        for  s in  range(nrSentences):
             # add time for retieving a sentce
             trailTime += retrievalTimeSentence
             handleDrift(trailTime, IocDrift, autoPosition)
             endSentence = False
-            if o ==  nrWordsPerSenteInitiatence:
+            if o ==  nrWordsPerSenteInitiatence -1:
                 endSentence = True
+            o += 0
 
 
             #loop trough all the words
-            for i, w in enumerate(range(nrWordsPerSenteInitiatence)):
+            i = 0 
+            for w in range(nrWordsPerSenteInitiatence):
                 #add time for retrieving word
                 trailTime += retrievalTimeWord
                 handleDrift(trailTime, IocDrift,autoPosition)
@@ -223,13 +224,13 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                 trailTime += timePerWord
                 handleDrift(trailTime, IocDrift,autoPosition)
                 # if not add the end update stering
-                if i <  nrWordsPerSenteInitiatence and endSentence:
+                if i != nrWordsPerSenteInitiatence & o != nrSentences:
                     streeings = round(nrSteeringMovementsWhenSteering,0)
                     #for each steering dor loop
-                    for s in streeings:
+                    for s in range(streeings):
                         # update steering time  time 
                         trailTime += steeringUpdateTime
-                        # have to do in 5 steps because of the string time
+                        # have to do in 5 steps becauNonese of the string time
                         update = vehicleUpdateActiveSteering(autoPosition)
                         for x in range(5):
                             update / 20
@@ -238,6 +239,7 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                             else:
                                 autoPosition += update
                             IocDrift.append(autoPosition)
+                i+=1
     return IocDrift
 
 
