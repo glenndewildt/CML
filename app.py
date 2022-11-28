@@ -1,5 +1,7 @@
 import drivermodel
 import matplotlib.pyplot as plt
+from math import ceil, floor
+
 
 tp = 100
 tc = 70
@@ -168,7 +170,4 @@ def example5():
 #print(example4("fast", "fast", "slow", 210))
 #print(example5())
 
-drivermodel.runSimulations()
-print(drivermodel.drifts)
-print(drivermodel.trailTime)
-print(drivermodel.trailTime / 50)
+print(drivermodel.runSimulations())

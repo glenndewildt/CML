@@ -13,7 +13,7 @@
 ### 
 ### import packages
 ###
-
+import  math 
 import numpy
 
 
@@ -23,7 +23,7 @@ import numpy
 ###
 ###
 
-trialTime = 0
+trailTime = 0
 drifts = 0
 ###
 ### Car / driving related parameters
@@ -68,7 +68,7 @@ wordsPerMinuteSD = 10.3 ## this si standard deviation (Jiang et al, 2020)
 
 ## Function to reset all parameters. Call this function at the start of each simulated trial. Make sure to reset GLOBAL parameters.
 def resetParameters():
-    global trialTime 
+    global trailTime 
     global drifts 
     global timePerWord
     global retrievalTimeWord
@@ -86,7 +86,7 @@ def resetParameters():
     global wordsPerMinuteMean
     global wordsPerMinuteSD
 
-    trialTime = 0
+    trailTime = 0
     drifts = 0
     
     timePerWord = 0  ### ms
@@ -165,12 +165,12 @@ def vehicleUpdateNotSteering():
 
 
 
-# function that handles the drifts , parms: trialTime, IocDrift,  return : IocDrift
-def handleDrift(trialTime, IocDrift):
+# function that handles the drifts , parms: trailTime, IocDrift,  return : IocDrift
+def handleDrift(trailTime, IocDrift, autoPostition):
         global driftTimes
         global timeStepPerDriftUpdate
 
-        driftTimes = round(trialTime, 0) / timeStepPerDriftUpdate
+        driftTimes = math.floor(trailTime / timeStepPerDriftUpdate)
         differenceDrift = driftTimes - drifts
         differenceDrift =  int(round(differenceDrift, 0))
         print(differenceDrift)
@@ -178,7 +178,11 @@ def handleDrift(trialTime, IocDrift):
             #foreach 50ms 
             for x in range(differenceDrift):
                 #update the IocDrift with  
-                IocDrift.append(vehicleUpdateNotSteering())
+                update = vehicleUpdateNotSteering()
+                update = update / 20
+                autoPostition += update
+                IocDrift.append(update)
+                driftTimes += 1
 
 
 
@@ -187,21 +191,24 @@ def handleDrift(trialTime, IocDrift):
 def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"): 
     resetParameters()
     IocDrift = []
-    global trialTime
+    global trailTime
     global startvelocity
+    autoPosition = startingPositionInLane
+
 
 
     # set times per word
     WPM = numpy.random.normal(loc=39.33, scale=10.3)
-    timePerWord = 60/WPM * 1000
+
+    timePerWord = 60 / WPM * 1000
     print(timePerWord)
     #check if stratagy is word
     if interleaving == "word":
         #loop through all the sentences
         for  o,s in  enumerate(range(nrSentences)):
             # add time for retieving a sentce
-            trialTime += retrievalTimeSentence
-            handleDrift(trialTime, IocDrift)
+            trailTime += retrievalTimeSentence
+            handleDrift(trailTime, IocDrift, autoPosition)
             endSentence = False
             if o ==  nrWordsPerSenteInitiatence:
                 endSentence = True
@@ -210,73 +217,40 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
             #loop trough all the words
             for i, w in enumerate(range(nrWordsPerSenteInitiatence)):
                 #add time for retrieving word
-                trialTime += retrievalTimeWord
-                handleDrift(trialTime, IocDrift)
+                trailTime += retrievalTimeWord
+                handleDrift(trailTime, IocDrift,autoPosition)
                 #add time for typing a word
-                trialTime += timePerWord
-                handleDrift(trialTime, IocDrift)
+                trailTime += timePerWord
+                handleDrift(trailTime, IocDrift,autoPosition)
                 # if not add the end update stering
                 if i <  nrWordsPerSenteInitiatence and endSentence:
-                    for s in nrSteeringMovementsWhenSteering:
-                        trialTime += steeringUpdateTime
-                        startvelocity += vehicleUpdateActiveSteering()
+                    streeings = round(nrSteeringMovementsWhenSteering,0)
+                    #for each steering dor loop
+                    for s in streeings:
+                        # update steering time  time 
+                        trailTime += steeringUpdateTime
+                        # have to do in 5 steps because of the string time
+                        update = vehicleUpdateActiveSteering(autoPosition)
+                        for x in range(5):
+                            update / 20
+                            if autoPosition >= 0:
+                                autoPosition -= update
+                            else:
+                                autoPosition += update
+                            IocDrift.append(autoPosition)
+    return IocDrift
+
+
+
                 
                         
-
-
-
-
-
-
-
-
-	
-	
-	
-
-
 
 
 ### function to run multiple simulations. Needs to be defined by students (section 3 of assignment)
 def runSimulations(nrSims = 100):
     runTrial(5,3,2,"word")
 
-def runTrial(nrWordsPerSentence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"):
-  resetParameters()
-  locDrifts = []
-  trialTime = 0
-  if interleaving == "word":
-    trialTime = 0
-    vehiclePosition = startingPositionInLane
-    WPM = numpy.random.normal(loc=39.33, scale=10.3)
-    timePerWord = 60/WPM * 1000
-    x = 0
-    y = 0
-    while x < nrSentences:
-      while y < nrWordsPerSentence:
-        trialTime += timePerWord + retrievalTimeWord
-        if y == 0:
-          trialTime += retrievalTimeSentence
-        updates = math.floor(trialTime/50)
-        while updates > 0:
-          change = vehicleUpdateNotSteering()
-          locDrifts.append(change)
-          vehiclePosition += change/20
-          updates -= 1
-          
-        if x != nrSentences and y != nrWordsPerSentence:
-          z = 0
-          while z < nrSteeringMovementsWhenSteering:              
-            change = vehicleUpdateActiveSteering(vehiclePosition)
-            if vehiclePosition > 0:
-              vehiclePosition -= change/4
-            else:
-              vehiclePosition += change/4
-            trialTime += 250
 
-        y += 1
-      x += 1
-      y = 0
 
 
 	
