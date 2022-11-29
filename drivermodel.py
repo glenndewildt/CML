@@ -172,7 +172,7 @@ def handleDrift(trailTime, IocDrift, autoPostition):
 
         driftTimes = math.floor(trailTime / timeStepPerDriftUpdate)
         differenceDrift = driftTimes - drifts
-        differenceDrift =  int(round(differenceDrift, 0))
+        differenceDrift =  int(differenceDrift)
         if differenceDrift > 0:
             #foreach 50ms 
             for x in range(differenceDrift):
@@ -225,7 +225,7 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                 handleDrift(trailTime, IocDrift,autoPosition)
                 # if not add the end update stering
                 if i != nrWordsPerSenteInitiatence & o != nrSentences:
-                    streeings = round(nrSteeringMovementsWhenSteering,0)
+                    streeings = int(nrSteeringMovementsWhenSteering)
                     #for each steering dor loop
                     for s in range(streeings):
                         # update steering time  time 
@@ -250,7 +250,7 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 
 ### function to run multiple simulations. Needs to be defined by students (section 3 of assignment)
 def runSimulations(nrSims = 100):
-    runTrial(5,3,2,"word")
+    return (runTrial(5,3,2,"word"))
 
 
 

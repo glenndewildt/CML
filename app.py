@@ -171,3 +171,12 @@ def example5():
 #print(example5())
 
 print(drivermodel.runSimulations())
+plt.rcParams["figure.figsize"] = [7.50, 3.50]
+plt.rcParams["figure.autolayout"] = True
+
+x = drivermodel.runSimulations()
+
+plt.title("Line graph")
+plt.plot(x, color="red")
+
+plt.show()
