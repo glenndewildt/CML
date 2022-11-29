@@ -245,7 +245,7 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 
                             IocDrift.append(autoPosition)
                 i+=1
-    return IocDrift
+    return (IocDrift , trailTime)
 
 
 
@@ -257,13 +257,20 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 def runSimulations(nrSims = 100):
     return (runTrial(5,3,2,"word"))
 
+def getMaxUpdate():
+    return max(updateList)
+
 def getMeanUpdate():
     up = []
     for u in updateList:
         up.append(abs(u))
-    return sum(up)/ len(up)
+    return numpy.average(u)
 
-
+def getUpdate():
+    up = []
+    for u in updateList:
+        up.append(abs(u))
+    return u
 
 
 	

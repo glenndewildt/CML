@@ -1,6 +1,7 @@
 import drivermodel
 import matplotlib.pyplot as plt
 from math import ceil, floor
+import numpy
 
 
 tp = 100
@@ -170,11 +171,18 @@ def example5():
 #print(example4("fast", "fast", "slow", 210))
 #print(example5())
 
-plt.rcParams["figure.figsize"] = [7.50, 3.50]
-plt.rcParams["figure.autolayout"] = True
 
-x = drivermodel.runSimulations()
-plt.text(0, 100, 'HELLO', fontsize=22, bbox=dict(facecolor='red', alpha=0.5))
+(x, tot ) = drivermodel.runSimulations()
+
+up = []
+for u in x:
+    up.append(abs(u))
+
+
+
+plt.figtext(0.15, 0.83, round(tot,6), fontsize=9)
+plt.figtext(0.15, 0.77, round(numpy.average(up),6), fontsize=9)
+plt.figtext(0.15, 0.7, round(max(up),6), fontsize=9)
 
 
 plt.title("Line graph")
