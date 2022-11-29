@@ -170,13 +170,16 @@ def example5():
 #print(example4("fast", "fast", "slow", 210))
 #print(example5())
 
-print(drivermodel.runSimulations())
 plt.rcParams["figure.figsize"] = [7.50, 3.50]
 plt.rcParams["figure.autolayout"] = True
 
 x = drivermodel.runSimulations()
+plt.text(0, 100, 'HELLO', fontsize=22, bbox=dict(facecolor='red', alpha=0.5))
+
 
 plt.title("Line graph")
 plt.plot(x, color="red")
 
 plt.show()
+
+print(drivermodel.getMeanUpdate())

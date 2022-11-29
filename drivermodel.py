@@ -162,13 +162,14 @@ def vehicleUpdateNotSteering():
     returnValue = velocityCheckForVectors(vals)
     return returnValue
 
-
+updateList = []
 
 
 # function that handles the drifts , parms: trailTime, IocDrift,  return : IocDrift
 def handleDrift(trailTime, IocDrift, autoPostition):
         global driftTimes
         global timeStepPerDriftUpdate
+        global updateList
 
         driftTimes = math.floor(trailTime / timeStepPerDriftUpdate)
         differenceDrift = driftTimes - drifts
@@ -179,6 +180,8 @@ def handleDrift(trailTime, IocDrift, autoPostition):
                 #update the IocDrift with  
                 update = vehicleUpdateNotSteering()
                 update = update / 20
+                updateList.append(update)
+
                 autoPostition += update
                 IocDrift.append(autoPostition)
                 driftTimes += 1
@@ -238,6 +241,8 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                                 autoPosition -= update
                             else:
                                 autoPosition += update
+                            updateList.append(update)
+
                             IocDrift.append(autoPosition)
                 i+=1
     return IocDrift
@@ -251,6 +256,12 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 ### function to run multiple simulations. Needs to be defined by students (section 3 of assignment)
 def runSimulations(nrSims = 100):
     return (runTrial(5,3,2,"word"))
+
+def getMeanUpdate():
+    up = []
+    for u in updateList:
+        up.append(abs(u))
+    return sum(up)/ len(up)
 
 
 
