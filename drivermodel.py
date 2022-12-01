@@ -232,15 +232,17 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                         trailTime += steeringUpdateTime
                         # have to do in 5 steps becauNonese of the string time
                         update = vehicleUpdateActiveSteering(autoPosition)
-                        for x in range(5):
-                            update / 20
-                            if autoPosition >= 0:
+                        update / 20
+                        if autoPosition >= 0:
+                            for x in range(5):
                                 autoPosition -= update
-                            else:
+                                updateList.append(update)
+                                IocDrift.append(autoPosition)
+                        else:
+                            for x in range(5):
                                 autoPosition += update
-                            updateList.append(update)
-
-                            IocDrift.append(autoPosition)
+                                updateList.append(update)
+                                IocDrift.append(autoPosition)
                 i+=1
     #check if stratagy is sentence
     if interleaving == "sentence":
@@ -268,15 +270,17 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                         trailTime += steeringUpdateTime
                         # have to do in 5 steps becauNonese of the string time
                         update = vehicleUpdateActiveSteering(autoPosition)
-                        for x in range(5):
-                            update / 20
-                            if autoPosition >= 0:
+                        update / 20
+                        if autoPosition >= 0:
+                            for x in range(5):
                                 autoPosition -= update
-                            else:
+                                updateList.append(update)
+                                IocDrift.append(autoPosition)
+                        else:
+                            for x in range(5):
                                 autoPosition += update
-                            updateList.append(update)
-
-                            IocDrift.append(autoPosition)
+                                updateList.append(update)
+                                IocDrift.append(autoPosition)
                 i+=1
     #check if stratagy is drivingOnly
     if interleaving == "drivingOnly":
@@ -304,15 +308,18 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 
         # have to do in 5 steps becauNonese of the string time
         for test in math.floor(trailTime/250):
-          update = vehicleUpdateActiveSteering(autoPosition)
-          for x in range(5):
+            update = vehicleUpdateActiveSteering(autoPosition)
             update / 20
             if autoPosition >= 0:
-              autoPosition -= update
+                for x in range(5):
+                    autoPosition -= update
+                    updateList.append(update)
+                    IocDrift.append(autoPosition)
             else:
-              autoPosition += update
-            updateList.append(update)
-            IocDrift.append(autoPosition)
+                for x in range(5):
+                    autoPosition += update
+                    updateList.append(update)
+                    IocDrift.append(autoPosition)
     #check if stratagy is none
     if interleaving == "none":
         #loop through all the sentences
