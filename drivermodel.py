@@ -15,6 +15,7 @@
 ###
 import  math 
 import numpy
+import random
 
 
 ###
@@ -24,7 +25,7 @@ import numpy
 ###
 
 trailTime = 0
-drifts = 0
+driftTimes = 0
 ###
 ### Car / driving related parameters
 ###
@@ -69,8 +70,6 @@ wordsPerMinuteSD = 10.3 ## this si standard deviation (Jiang et al, 2020)
 ## Function to reset all parameters. Call this function at the start of each simulated trial. Make sure to reset GLOBAL parameters.
 def resetParameters():
     global trailTime 
-    global drifts 
-    global timePerWord
     global retrievalTimeWord
     global retrievalTimeSentence 
     global steeringUpdateTime 
@@ -87,8 +86,7 @@ def resetParameters():
     global wordsPerMinuteSD
 
     trailTime = 0
-    drifts = 0
-    
+
     timePerWord = 0  ### ms
 
     retrievalTimeWord = 200   #ms
@@ -166,14 +164,13 @@ updateList = []
 
 
 # function that handles the drifts , parms: trailTime, IocDrift,  return : IocDrift
-def handleDrift(trailTime, IocDrift, autoPostition):
-        global driftTimes
-        global timeStepPerDriftUpdate
-        global updateList
+def handleDrift(trailTime, IocDrift, autoPostition, drifts):
 
         driftTimes = math.floor(trailTime / timeStepPerDriftUpdate)
+
         differenceDrift = driftTimes - drifts
         differenceDrift =  int(differenceDrift)
+
         if differenceDrift > 0:
             #foreach 50ms 
             for x in range(differenceDrift):
@@ -185,6 +182,7 @@ def handleDrift(trailTime, IocDrift, autoPostition):
                 autoPostition += update
                 IocDrift.append(autoPostition)
                 driftTimes += 1
+        return driftTimes
 
 
 
@@ -193,6 +191,7 @@ def handleDrift(trailTime, IocDrift, autoPostition):
 def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhenSteering=2, interleaving="word"): 
     resetParameters()
     IocDrift = []
+    drifts = 0
     global trailTime
     global startvelocity
     autoPosition = startingPositionInLane
@@ -210,7 +209,7 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
         for  s in  range(nrSentences):
             # add time for retieving a sentce
             trailTime += retrievalTimeSentence
-            handleDrift(trailTime, IocDrift, autoPosition)
+            drifts = handleDrift(trailTime, IocDrift, autoPosition, drifts)
             o += 0
 
 
@@ -219,10 +218,10 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
             for w in range(nrWordsPerSenteInitiatence):
                 #add time for retrieving word
                 trailTime += retrievalTimeWord
-                handleDrift(trailTime, IocDrift,autoPosition)
+                drifts = handleDrift(trailTime, IocDrift,autoPosition, drifts)
                 #add time for typing a word
                 trailTime += timePerWord
-                handleDrift(trailTime, IocDrift,autoPosition)
+                drifts = handleDrift(trailTime, IocDrift,autoPosition, drifts)
                 # if not add the end update stering
                 if i != nrWordsPerSenteInitiatence - 1 & o != nrSentences - 1:
                     streeings = int(nrSteeringMovementsWhenSteering)
@@ -251,7 +250,8 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
         for  s in  range(nrSentences):
             # add time for retieving a sentce
             trailTime += retrievalTimeSentence
-            handleDrift(trailTime, IocDrift, autoPosition)
+            drifts = handleDrift(trailTime, IocDrift, autoPosition, drifts)
+
             o += 0
 
 
@@ -260,14 +260,17 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
             for w in range(nrWordsPerSenteInitiatence):
                 #add time for typing a word
                 trailTime += timePerWord
-                handleDrift(trailTime, IocDrift,autoPosition)
+                drifts = handleDrift(trailTime, IocDrift,autoPosition, drifts)
+
                 # if not add the end update stering
+
                 if i == nrWordsPerSenteInitiatence - 1 & o != nrSentences - 1:
                     streeings = int(nrSteeringMovementsWhenSteering)
                     #for each steering dor loop
                     for s in range(streeings):
                         # update steering time  time 
                         trailTime += steeringUpdateTime
+
                         # have to do in 5 steps becauNonese of the string time
                         update = vehicleUpdateActiveSteering(autoPosition)
                         update / 20
@@ -282,6 +285,8 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                                 updateList.append(update)
                                 IocDrift.append(autoPosition)
                 i+=1
+                drifts = handleDrift(trailTime, IocDrift,autoPosition, drifts)
+
     #check if stratagy is drivingOnly
     if interleaving == "drivingOnly":
         #loop through all the sentences
@@ -307,7 +312,7 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                 i+=1
 
         # have to do in 5 steps becauNonese of the string time
-        for test in math.floor(trailTime/250):
+        for test in range(math.floor(trailTime/250)):
             update = vehicleUpdateActiveSteering(autoPosition)
             update / 20
             if autoPosition >= 0:
@@ -345,9 +350,9 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                 i+=1
                 
         # handleDrift
-        handleDrift(trailTime, IocDrift, autoPosition)
+        handleDrift(trailTime, IocDrift, autoPosition, drifts)
 
-    return (IocDrift , trailTime)
+    return (IocDrift , trailTime, max(IocDrift), numpy.average(IocDrift))
 
 
 
@@ -356,8 +361,34 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 
 
 ### function to run multiple simulations. Needs to be defined by students (section 3 of assignment)
-def runSimulations(nrSims = 100):
-    return (runTrial(5,3,2,"word"))
+def runSimulations(nrSims = 100, w = 3,sen =4 , st= 2, con = "all"):
+    sum = ["word", "sentence", "drivingOnly", "none"]
+    result = []
+    if con == "all":
+        for s in sum:
+            maxdiv = []
+            meandiv = []
+            total = []
+
+            for x in range(nrSims):
+                num = random.randint(5, 20)
+
+                (d , t, maxd, meand) = runTrial(num, 10, 4, s)
+                maxdiv.append(maxd)
+                meandiv.append(maxdiv)
+                total.append(t)
+        result.append([total, maxdiv,meandiv])
+
+
+    else:
+        for x in range(nrSims):
+            totaltrailTime = 0
+            meanDiv = 0
+            maxDiv = 0
+            condition = ""
+            result.append(runTrial(w, sen, st, con))
+
+    return result
 
 def getMaxUpdate():
     return max(updateList)

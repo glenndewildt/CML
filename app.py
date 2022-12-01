@@ -3,49 +3,53 @@ import matplotlib.pyplot as plt
 from math import ceil, floor
 import numpy
 
-
 tp = 100
 tc = 70
 tm = 70
 
+
 # response times in ms
 def start():
     return 0
+
+
 def perceptualstep(x):
-    result = 0 
+    result = 0
 
     # if slow
-    if(x =="slow"):
-        result +=200
-    elif(x =="fast"):
-        result +=50
+    if (x == "slow"):
+        result += 200
+    elif (x == "fast"):
+        result += 50
     else:
-        result +=100
-
+        result += 100
 
     return result
+
+
 def cognitivestep(x):
     result = 0
     # if slow
-    if(x =="slow"):
-        result +=170
-    elif(x =="fast"):
-        result +=25
+    if (x == "slow"):
+        result += 170
+    elif (x == "fast"):
+        result += 25
     else:
-        result +=70
+        result += 70
     return result
+
+
 def motorstep(x):
     result = 0
     # if slow
-    if(x =="slow"):
-        result +=100
-    elif(x =="fast"):
-        result +=30
+    if (x == "slow"):
+        result += 100
+    elif (x == "fast"):
+        result += 30
     else:
-        result +=70
+        result += 70
 
     return result
-
 
 
 # calculate  figure 1
@@ -67,13 +71,12 @@ def example1():
 # Q 1D
 def example2(x):
     print("hello")
-    if(x == "extreme"):
+    if (x == "extreme"):
         t1 = start()
         t1 += perceptualstep("fast")
-        t1 += cognitivestep("fast") 
+        t1 += cognitivestep("fast")
         t1 += motorstep("fast")
         print(t1)
-
 
         t2 = start()
         t2 += perceptualstep("middle")
@@ -86,23 +89,23 @@ def example2(x):
         t3 += cognitivestep("slow")
         t3 += motorstep("slow")
         print(t3)
-        return [t1,t2,t3]
-    elif(x == "all"):
+        return [t1, t2, t3]
+    elif (x == "all"):
         a = start()
         fast_array = []
         fast_array.append(perceptualstep("fast"))
-        fast_array.append(perceptualstep("middle")) 
-        fast_array.append(perceptualstep("slow")) 
+        fast_array.append(perceptualstep("middle"))
+        fast_array.append(perceptualstep("slow"))
 
         middle_array = []
         middle_array.append(cognitivestep("fast"))
-        middle_array.append(cognitivestep("middle")) 
-        middle_array.append(cognitivestep("slow")) 
+        middle_array.append(cognitivestep("middle"))
+        middle_array.append(cognitivestep("slow"))
 
         slow_array = []
         slow_array.append(motorstep("fast"))
-        slow_array.append(motorstep("middle")) 
-        slow_array.append(motorstep("slow")) 
+        slow_array.append(motorstep("middle"))
+        slow_array.append(motorstep("slow"))
         result = []
         for f in fast_array:
             for m in middle_array:
@@ -111,6 +114,7 @@ def example2(x):
         plt.boxplot(result)
         plt.show()
         return result
+
 
 def example3(x, y, z):
     t1 = start()
@@ -121,6 +125,7 @@ def example3(x, y, z):
     t1 += motorstep(z)
 
     return t1
+
 
 def example4(x, y, z, delay):
     a = [40, 80, 110, 150, 210, 240]
@@ -133,6 +138,7 @@ def example4(x, y, z, delay):
         t1 += cognitivestep(y)
         t1 += motorstep(z)
         return t1
+
 
 def example5():
     type = ["fast", "middle", "slow"]
@@ -164,30 +170,47 @@ def example5():
     plt.show()
     return result1, result2
 
-      
+
+# print(example2("all"))
+# print(example4("fast", "fast", "slow", 210))
+# print(example5())
 
 
-#print(example2("all"))
-#print(example4("fast", "fast", "slow", 210))
-#print(example5())
+x = drivermodel.runSimulations(100, 17, 10, 4, 'all')
 
 
-(x, tot ) = drivermodel.runSimulations()
-
-up = []
-for u in x:
-    up.append(abs(u))
-
-
-
-plt.figtext(0.15, 0.83, round(tot,6), fontsize=9)
-plt.figtext(0.15, 0.77, round(numpy.average(up),6), fontsize=9)
-plt.figtext(0.15, 0.7, round(max(up),6), fontsize=9)
-
+print(x[0][1])
 
 plt.title("Line graph")
-plt.plot(x, color="red")
+plt.plot(x[0][1] , color="red")
+plt.xlabel("Time (in ms * 50)")
+
+plt.ylabel("Lane position (in m)")
 
 plt.show()
 
-print(drivermodel.getMeanUpdate())
+
+for test in x:
+    for t in test:
+        print(t)
+
+# for (ex, tot, _, _) in x:
+#     up = []
+#     for u in ex:
+#         up.append(abs(u))
+#
+#     plt.figtext(0.15, 0.83, str(round(tot, 6)) + " trail time", fontsize=9)
+#     plt.figtext(0.15, 0.77, str(round(numpy.average(up), 6)) + " mean position", fontsize=9)
+#     plt.figtext(0.15, 0.7, str(round(max(up), 6)) + " max position", fontsize=9)
+#
+#     print(len(ex))
+#
+#     plt.title("Line graph")
+#     plt.plot(ex, color="red")
+#     plt.xlabel("Time (in ms * 50)")
+#
+#     plt.ylabel("Lane position (in m)")
+#
+#     plt.show()
+#
+#     print(drivermodel.getMeanUpdate())
