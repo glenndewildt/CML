@@ -13,9 +13,10 @@
 ### 
 ### import packages
 ###
-import  math 
+import math 
 import numpy
 import random
+from matplotlib import pyplot as plt
 
 
 ###
@@ -361,34 +362,40 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 
 
 ### function to run multiple simulations. Needs to be defined by students (section 3 of assignment)
-def runSimulations(nrSims = 100, w = 3,sen =4 , st= 2, con = "all"):
+def runSimulations(nrSims = 10, w = 3,sen =4 , st= 2):
     sum = ["word", "sentence", "drivingOnly", "none"]
     result = []
-    if con == "all":
-        for s in sum:
-            maxdiv = []
-            meandiv = []
-            total = []
+    con = []
+    maxdiv = []
+    meandiv = []
+    total = []
+    for s in sum:
+      for x in range(nrSims):
+        num = random.randint(5, 20)
 
-            for x in range(nrSims):
-                num = random.randint(5, 20)
+        (d , t, maxd, meand) = runTrial(num, 10, 4, s)
+        maxdiv.append(maxd)
+        meandiv.append(meand)
+        total.append(t)
+        con.append(s)
+        #result.append([total, maxdiv,meandiv])
 
-                (d , t, maxd, meand) = runTrial(num, 10, 4, s)
-                maxdiv.append(maxd)
-                meandiv.append(maxdiv)
-                total.append(t)
-        result.append([total, maxdiv,meandiv])
+    for nr in range(nrSims*4):
+      x = total[nr]
+      y = maxdiv[nr]
+      if con[nr] == "word":
+        a, = plt.plot(x, y, marker="o", markeredgecolor="grey", markerfacecolor="grey")
+      if con[nr] == "sentence":
+        b, = plt.plot(x, y, marker="^", markeredgecolor="grey", markerfacecolor="grey")
+      if con[nr] == "drivingOnly":
+        c, = plt.plot(x, y, marker="s", markeredgecolor="grey", markerfacecolor="grey")
+      if con[nr] == "none":
+        d, = plt.plot(x, y, marker="P", markeredgecolor="grey", markerfacecolor="grey")
+    plt.legend([a, b, c, d], ["Attr A", "Attr B", "Attr C", "Attr D"])
+    plt.show()
 
 
-    else:
-        for x in range(nrSims):
-            totaltrailTime = 0
-            meanDiv = 0
-            maxDiv = 0
-            condition = ""
-            result.append(runTrial(w, sen, st, con))
-
-    return result
+    #return result
 
 def getMaxUpdate():
     return max(updateList)
@@ -411,3 +418,5 @@ def getUpdate():
 # left axis should be in meters
 # Asume steering in drivingOnly does still take 250 ms.
 # Do we use updateList?
+
+runSimulations()
