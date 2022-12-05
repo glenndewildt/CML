@@ -285,8 +285,9 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
                                 autoPosition += update
                                 updateList.append(update)
                                 IocDrift.append(autoPosition)
+                    drifts = handleDrift(trailTime, IocDrift,autoPosition, drifts)
                 i+=1
-                drifts = handleDrift(trailTime, IocDrift,autoPosition, drifts)
+
 
     #check if stratagy is drivingOnly
     if interleaving == "drivingOnly":
@@ -362,13 +363,14 @@ def runTrial(nrWordsPerSenteInitiatence =5,nrSentences=3,nrSteeringMovementsWhen
 
 
 ### function to run multiple simulations. Needs to be defined by students (section 3 of assignment)
-def runSimulations(nrSims = 10, w = 3,sen =4 , st= 2):
+def runSimulations(nrSims = 100, w = 3,sen =4 , st= 2):
     sum = ["word", "sentence", "drivingOnly", "none"]
     result = []
     con = []
     maxdiv = []
     meandiv = []
     total = []
+    counter = 0
     for s in sum:
       for x in range(nrSims):
         num = random.randint(5, 20)
@@ -378,6 +380,10 @@ def runSimulations(nrSims = 10, w = 3,sen =4 , st= 2):
         meandiv.append(meand)
         total.append(t)
         con.append(s)
+        # print avg
+
+
+
         #result.append([total, maxdiv,meandiv])
 
     for nr in range(nrSims*4):
@@ -385,14 +391,52 @@ def runSimulations(nrSims = 10, w = 3,sen =4 , st= 2):
       y = maxdiv[nr]
       if con[nr] == "word":
         a, = plt.plot(x, y, marker="o", markeredgecolor="grey", markerfacecolor="grey")
+
       if con[nr] == "sentence":
         b, = plt.plot(x, y, marker="^", markeredgecolor="grey", markerfacecolor="grey")
       if con[nr] == "drivingOnly":
         c, = plt.plot(x, y, marker="s", markeredgecolor="grey", markerfacecolor="grey")
       if con[nr] == "none":
         d, = plt.plot(x, y, marker="P", markeredgecolor="grey", markerfacecolor="grey")
-    plt.legend([a, b, c, d], ["Attr A", "Attr B", "Attr C", "Attr D"])
+    xi = math.fsum(total[0:100]) / 100
+    xo = math.fsum(maxdiv[0:100]) / 100
+    markersize = 10
+
+    e, = plt.plot(xi, xo, marker="o", markeredgecolor="red",
+                      markerfacecolor="red", markersize = markersize)
+    plt.errorbar(xi, xo, xerr=numpy.std(total[0:100]), yerr=numpy.std(maxdiv[0:100]))
+
+    f, = plt.plot(math.fsum(total[101:200]) / 100, math.fsum(maxdiv[101:200]) / 100, marker="^", markeredgecolor="blue",
+                      markerfacecolor="blue",markersize = markersize)
+    plt.errorbar(math.fsum(total[101:200]) / 100, math.fsum(maxdiv[101:200]) / 100,xerr=numpy.std(total[101:200]), yerr=numpy.std(maxdiv[101:200]))
+
+    g, = plt.plot(math.fsum(total[201:300]) / 100, math.fsum(maxdiv[201:300]) / 100, marker="s", markeredgecolor="green",
+                      markerfacecolor="green",markersize = markersize)
+    plt.errorbar(math.fsum(total[201:300]) / 100, math.fsum(maxdiv[201:300]) / 100, xerr=numpy.std(total[201:300]), yerr=numpy.std(maxdiv[201:300]))
+
+    h, = plt.plot(math.fsum(total[301:400]) / 100, math.fsum(maxdiv[301:400]) / 100, marker="P", markeredgecolor="yellow",
+                      markerfacecolor="yellow",markersize = markersize)
+    plt.errorbar(math.fsum(total[301:400]) / 100, math.fsum(maxdiv[301:400]) / 100, xerr=numpy.std(total[301:400]), yerr=numpy.std(maxdiv[301:400]), markeredgecolor = "yellow")
+
+    print("std max div: "+ str(numpy.std(maxdiv[0:100])))
+    print("std total time: "+str(numpy.std(total[0:100])))
+    print(xi)
+    print(xo)
+
+
+    print("std max div: "+ str(numpy.std(maxdiv[101:200])))
+    print("std total time: "+str(numpy.std(total[101:200])))
+    print(math.fsum(total[101:200]) / 100)
+    print(math.fsum(maxdiv[101:200]) / 100)
+
+
+    plt.legend([e, f, g, h], ["Average word", "Average sentence", "Average drivingOnly", "Average none"])
+    plt.xlabel("Time (in ms)")
+
+    plt.ylabel("Lane position (in m)")
     plt.show()
+
+    counter +=1
 
 
     #return result
