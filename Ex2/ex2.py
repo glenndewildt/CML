@@ -40,9 +40,6 @@ for cat in resultPos:
         PosResult[index].append(c)
         index += 1
 
-print(PosResult[1][0])
-print(PosResult[2][0])
-print(PosResult[0][0])
 
 
 avgRes =[]
@@ -57,10 +54,9 @@ for cat in resultZero:
     index = 0
 
     for c in cat:
-
-
         ZeroResult[index].append(c)
         index += 1
+
 avgPos =[]
 for r in ZeroResult:
     avgPos.append(numpy.average(r))
@@ -68,20 +64,19 @@ for r in ZeroResult:
 
 templist = []
 
-for n in range(20):
+for n in range(100):
   templist.append(avgRes[n] - avgPos[n])
-print(templist)
 
 # Build the plot
 fig, ax = plt.subplots()
-ax.bar(numpy.arange(20),templist, align='center', alpha=0.5, ecolor='black', capsize=10)
+ax.bar(numpy.arange(100),templist, align='center', alpha=0.5, ecolor='black', capsize=10)
 ax.set_ylabel('Response Aplitude')
 ax.set_title('Voxels')
 ax.yaxis.grid(True)
 
 # Save the figure and show
 plt.tight_layout()
-plt.show()
+#plt.show()
 
 ##########################################
 ### 1 A
@@ -130,8 +125,63 @@ ax.yaxis.grid(True)
 plt.tight_layout()
 #plt.show()
 
+##################################
+#### 2A
+from sklearn import svm
+from sklearn import metrics
+from sklearn.feature_extraction.text import CountVectorizer
+
+resultPos = []
+resultZero = []
+
+index = 0
+
+for value in catVectors.iloc[:,0]:
+
+    if value == 0:
+        resultZero.append(nr2.iloc[index, :])
+
+    if value == 1:
+        resultPos.append(nr2.iloc[index, :])
+
+    index += 1
 
 
+cats = ["an","inAn"]
+
+trainingSetAn= resultPos[0 : 22]
+TestSetAn= resultPos[22 : 44]
+trainingSetInAn= resultZero[0 : 22]
+TestSetInAn= resultZero[22 : 44]
+
+vectorizer = CountVectorizer()
+zeros = [0] * 22
+ones = [1] * 22
+
+TrainLabels = zeros + ones
+
+TrainAB = trainingSetAn + trainingSetInAn
+TestAB = TestSetAn + TestSetInAn
+
+
+
+
+
+
+
+
+clf = svm.SVC(kernel='linear') # Linear Kernel
+clf.fit(TrainAB, TrainLabels)
+prediction = clf.predict(TestAB)
+print("Accuracy:",metrics.accuracy_score(TrainLabels, prediction))
+
+
+
+
+
+
+plt.scatter(templist, clf.coef_)
+plt.show()
 
 
 
