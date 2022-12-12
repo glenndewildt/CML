@@ -5,6 +5,9 @@ import random
 import matplotlib.pyplot as plt
 from scipy import stats
 from scipy.stats import sem
+import statistics
+
+import researchpy as rp
 
 
 
@@ -40,7 +43,6 @@ for cat in resultPos:
     for c in cat:
         PosResult[index].append(c)
         index += 1
-
 
 
 avgRes =[]
@@ -95,17 +97,21 @@ for cat in resultZero:
 
 avgBoth = []
 
-for cat1 in resultPos:
-  for cat2 in resultZero:
-    x = numpy.average(cat1)
-    y = numpy.average(cat2)
+for i in range(len(avgPos)):
+    x = numpy.average(avgPos[i])
+    y = numpy.average(avgZero[i])
+
     avgBoth.append(x-y)
 
+
+
 cats = ["an","inAn"]
+
 
 # Calculate the average
 Pos_mean = numpy.mean(avgPos)
 Zero_mean = numpy.mean(avgZero)
+avgBoth.append(abs(Pos_mean - Zero_mean))
 Both_mean = numpy.mean(avgBoth)
 
 # Calculate the standard deviation
@@ -114,7 +120,7 @@ Pos_std = numpy.std(avgPos)
 #Pos_std = math.sqrt(numpy.mean(x))
 Zero_std = numpy.std(avgZero)
 #Zero_std = math.sqrt(abs(Zero_mean))
-Both_std = numpy.std(avgBoth)
+Both_std = numpy.std((numpy.subtract(avgZero , avgPos)))
 #Both_std = math.sqrt(abs(Both_mean))
 
 # Create lists for the plot
@@ -124,7 +130,10 @@ error = [sem(avgPos), sem(avgZero)]#error = [Pos_std, Zero_std]
 
 y = abs((Zero_mean - avgPos) - (Pos_mean - Zero_mean))**2
 stdtest = math.sqrt(numpy.mean(y))
-test = (Both_mean)/((Both_std)/numpy.sqrt(44))#2.4737
+
+test = (Both_mean)/((Both_std)/(numpy.sqrt(44)))#2.4737
+print(test)
+print(stats.t.sf(1.58221, df=43)*2)
 
 stats.t.ppf(avgPos, 43)
 
@@ -184,6 +193,7 @@ TestAB = TestSetAn + TestSetInAn
 
 
 
+stats.ttest_ind(ZeroResult, PosResult)
 
 
 
@@ -199,7 +209,6 @@ print("Accuracy:",metrics.accuracy_score(TrainLabels, prediction))
 
 #plt.scatter(templist, clf.coef_)
 plt.show()
-
 
 
 
