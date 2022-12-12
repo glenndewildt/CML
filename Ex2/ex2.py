@@ -45,9 +45,9 @@ for cat in resultPos:
         index += 1
 
 
-avgRes =[]
+avgResPos =[]
 for r in PosResult:
-    avgRes.append(numpy.average(r))
+    avgResPos.append(numpy.average(r))
 
 
 ZeroResult = []
@@ -68,11 +68,11 @@ for r in ZeroResult:
 templist = []
 
 for n in range(100):
-  templist.append(avgRes[n] - avgPos[n])
+  templist.append(avgResPos[n] - avgPos[n])
 
 # Build the plot
 fig, ax = plt.subplots()
-ax.bar(numpy.arange(100),templist, align='center', alpha=0.5, ecolor='black', capsize=10)
+ax.bar(numpy.arange(20),templist[0:20], align='center', alpha=0.5, ecolor='black', capsize=10)
 ax.set_ylabel('Response Aplitude')
 ax.set_title('Voxels')
 ax.yaxis.grid(True)
@@ -191,26 +191,73 @@ TestAB = TestSetAn + TestSetInAn
 
 
 
-
-
-stats.ttest_ind(ZeroResult, PosResult)
-
-
-
 clf = svm.SVC(kernel='linear') # Linear Kernel
 clf.fit(TrainAB, TrainLabels)
 prediction = clf.predict(TestAB)
 print("Accuracy:",metrics.accuracy_score(TrainLabels, prediction))
 
-
-
-
-
-
-#plt.scatter(templist, clf.coef_)
 plt.show()
 
 
+plt.scatter(numpy.resize(clf.coef_,20),templist[0:20])
+plt.show()
+
+print(numpy.corrcoef(numpy.resize(clf.coef_,20),templist[0:20]))
+
+
+TrainHumanNonHuman = resultPos[0 : 10] + resultPos[24 : 34]
+TestHumanNonHuman = resultPos[10 : 20] + resultPos[34 : 44]
+
+zeros = [0] * 10
+ones = [1] * 10
+
+TrainLabels = zeros + ones
+
+clf = svm.SVC(kernel='linear') # Linear Kernel
+clf.fit(TrainHumanNonHuman, TrainLabels)
+prediction = clf.predict(TestHumanNonHuman)
+print("Accuracy:",metrics.accuracy_score(TrainLabels, prediction))
+
+########################################## 3
+
+
+numpy.corrcoef(clf.coef_,templist)
+
+AllImages = []
+index = 0
+
+for value in catVectors.iloc[:,0]:
+
+    AllImages.append(nr1.iloc[index, :])
+    index += 1
+
+print(len(AllImages))
+
+
+heatmap = numpy.arange(88*88).reshape(88,88)
+image_index = 0
+# for image in AllImages :
+#     compare_index = 0
+#
+#     for compare in AllImages:
+#         heatmap[image_index][compare_index] = numpy.corrcoef(image, compare)[0][1]
+#
+#         #print(numpy.subtract( 1,numpy.corrcoef(image, compare)))
+#         compare_index += 1
+#     image_index +=1
+import seaborn as sns
+
+heatmap = numpy.corrcoef(AllImages)
+heatmap = numpy.subtract(1,heatmap)
+#heatmap = numpy.multiply(-1,heatmap)
+
+print(heatmap)
+
+print(len(heatmap))
+ax = sns.heatmap(heatmap)
+
+plt.imshow(heatmap, cmap='hot', interpolation='nearest')
+plt.show()
 
 
 
