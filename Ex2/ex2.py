@@ -4,6 +4,7 @@ import numpy
 import random
 import matplotlib.pyplot as plt
 from scipy import stats
+from scipy.stats import sem
 
 
 
@@ -92,22 +93,38 @@ for cat in resultZero:
     x = numpy.average(cat)
     avgZero.append(x)
 
+avgBoth = []
+
+for cat1 in resultPos:
+  for cat2 in resultZero:
+    x = numpy.average(cat1)
+    y = numpy.average(cat2)
+    avgBoth.append(x-y)
+
 cats = ["an","inAn"]
 
 # Calculate the average
 Pos_mean = numpy.mean(avgPos)
 Zero_mean = numpy.mean(avgZero)
+Both_mean = numpy.mean(avgBoth)
 
 # Calculate the standard deviation
 Pos_std = numpy.std(avgPos)
+#x = abs(avgPos - Pos_mean)**2
+#Pos_std = math.sqrt(numpy.mean(x))
 Zero_std = numpy.std(avgZero)
-
+#Zero_std = math.sqrt(abs(Zero_mean))
+Both_std = numpy.std(avgBoth)
+#Both_std = math.sqrt(abs(Both_mean))
 
 # Create lists for the plot
 x_pos = numpy.arange(len(cats))
 CTEs = [Pos_mean, Zero_mean]
-error = [Pos_std, Zero_std]
-test = (abs(Pos_mean - Zero_mean))/((abs(Pos_std - Zero_std))/numpy.sqrt(44))
+error = [sem(avgPos), sem(avgZero)]#error = [Pos_std, Zero_std]
+
+y = abs((Zero_mean - avgPos) - (Pos_mean - Zero_mean))**2
+stdtest = math.sqrt(numpy.mean(y))
+test = (Both_mean)/((Both_std)/numpy.sqrt(44))#2.4737
 
 stats.t.ppf(avgPos, 43)
 
@@ -180,8 +197,9 @@ print("Accuracy:",metrics.accuracy_score(TrainLabels, prediction))
 
 
 
-plt.scatter(templist, clf.coef_)
+#plt.scatter(templist, clf.coef_)
 plt.show()
+
 
 
 
