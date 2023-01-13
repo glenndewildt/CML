@@ -18,22 +18,34 @@ def bayesFunctionMultipleHypotheses(priors , likelihood):
     return (priors[0] * likelihood[0]) / result
 
 def bayesFactor(posteriors, priors):
-    ph = priors[0]
-    pnoth = sum(priors[1:])
-    #dgivenh = posteriors[0]
-    priopros = sum(posteriors[1:])
+    # ph = priors[0]
+    # pnoth = sum(priors[1:])
+    # #dgivenh = posteriors[0]
+    # priopros = sum(posteriors[1:])
 
 
 
-    dgivenh = bayesFunctionMultipleHypotheses(priors, posteriors)
-    print(posteriors[0]/ (1 - posteriors[0]))
+    # dgivenh = bayesFunctionMultipleHypotheses(priors, posteriors)
+    # print(posteriors[0]/ (1 - posteriors[0]))
 
 
-    result = (ph/ pnoth) * (dgivenh/(1 - dgivenh))
-    print(posteriors[1]/posteriors[2] + posteriors[1]/posteriors[0])
+    # result = (ph/ pnoth) * (dgivenh/(1 - dgivenh))
+    # print(posteriors[1]/posteriors[2] + posteriors[1]/posteriors[0])
+    ph1d = posteriors[0]
+    ph1 = priors[0]
+    result2 = []
+    
+    for i in range(len(priors)):
+        if i == 0:
+            ph2 = 1 - priors[i]
+            ph2d = 1 - posteriors[i]
+        else:
+            ph2 = priors[i]
+            ph2d = posteriors[i]
+        result = (ph1d*ph2)/(ph2d*ph1)
+        result2.append(result)
 
-
-    return result
+    return result2
 
 
 
