@@ -32,7 +32,7 @@ def clean_data():
                  i-th participant, j-th query, and k-th repetition
              <2> queryOrder --> the only order we clean data and generate model predictions
     """
-    all_data = glob.glob('all_data/*.csv') # data directory
+    all_data = glob.glob('data/PrEstExp_811_111418_122039.csv') # data directory
     numPar = len(all_data) # total no. of participants
     print(numPar,' participants were considered!')
     print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
@@ -117,6 +117,8 @@ def get_truePr_RF(a,b,c,d):
 def generativeModel_RF(params):
     a, b, c, d = [0, 0], [0, 0], [0, 0], [0, 0]
     a[0], b[0], c[0], d[0], a[1], b[1], c[1], d[1] = params
+
+
     MSE = 0
 
     allpredmeans = np.zeros((40,))
@@ -130,6 +132,8 @@ def generativeModel_RF(params):
 
         for i, trueP in enumerate(truePr):
             allpredmeans[i+iter*20] = trueP
+
+
     return allpredmeans, MSE
 
 
@@ -142,6 +146,7 @@ def MSE_RF(params):
     for i in range(len(allpredmeans)):
         currentdata = testdata[i,:].flatten()
         MSE += np.mean((allpredmeans[i] - currentdata) ** 2)/40
+
     return MSE
 
 
@@ -156,6 +161,7 @@ def init_fit_RF():
     bnds = [(0.0, 100), (0.0, 100), (0.0, 100), (0.0, 100),
             (0.0, 100), (0.0, 100), (0.0, 100), (0.0, 100) ]
 
+    totBIC = 0
 
     for ipar in range(84):  # loop through participants
 
@@ -171,6 +177,7 @@ def init_fit_RF():
         n_data = 40*3
 
         allpredmeans, _ = generativeModel_RF(fit_all_data.x)
+        print("ALL PREP MEANS"+ str(allpredmeans[4]))
 
         ### Comment Chris: once you are at the relevant part of the assignment, replace the "=0" with a call to your function that calculates the BIC
         BIC = 0

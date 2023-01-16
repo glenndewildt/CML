@@ -32,7 +32,7 @@ def clean_data():
                  i-th participant, j-th query, and k-th repetition
              <2> queryOrder --> the only order we clean data and generate model predictions
     """
-    all_data = glob.glob('all_data/*.csv') # data directory
+    all_data = glob.glob('data/*.csv')[0:5] # data directory
     numPar = len(all_data) # total no. of participants
     print(numPar,' participants were considered!')
     print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
