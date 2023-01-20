@@ -50,4 +50,38 @@ def bayesFactor(posteriors, priors):
 
 
 
-print(bayesFactor([0.9,0.05,0.05],[0.2,0.6,0.2]))
+#print(bayesFactor([0.9,0.05,0.05],[0.2,0.6,0.2]))
+posteriors = bayesFunctionMultipleHypotheses([0.5,0.5],[0.531,0.52])
+#print(posteriors)
+priors = [0.5,0.5]
+#print(bayesFactor([posteriors, 1-posteriors], priors))
+priors = [0.001,0.999]
+posteriors = bayesFunctionMultipleHypotheses(priors,[0.531,0.52])
+#print(posteriors)
+#print(bayesFactor([posteriors, 1-posteriors], priors))
+
+prior = bayesFunctionMultipleHypotheses([0.5,0.5],[0.531,0.52])
+priors = [prior , 1- prior]
+likelihood = [0.471, 0.520]
+posteriors = bayesFunctionMultipleHypotheses(priors,likelihood)
+
+print(posteriors)
+
+priors = [posteriors , 1- posteriors]
+likelihood = [0.491, 0.65]
+posteriors = bayesFunctionMultipleHypotheses(priors,likelihood)
+
+print(posteriors)
+
+priors = [posteriors , 1- posteriors]
+likelihood = [0.505, 0.70]
+posteriors = bayesFunctionMultipleHypotheses(priors,likelihood)
+b1 = bayesFunction(0.411, 0.505,0.70)
+b2 = bayesFunction(0.589, 0.505,0.70)
+
+bf = bayesFactor([b1,b2], [0.505,0.70])
+
+print(bf)
+print(posteriors)
+
+

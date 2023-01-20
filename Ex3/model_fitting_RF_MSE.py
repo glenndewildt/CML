@@ -15,7 +15,7 @@ We are grateful for Zhu et al for openly sharing their work.
 
 
 
-
+import math
 import numpy as np
 import scipy.stats as st
 from scipy.optimize import fmin, differential_evolution
@@ -32,7 +32,7 @@ def clean_data():
                  i-th participant, j-th query, and k-th repetition
              <2> queryOrder --> the only order we clean data and generate model predictions
     """
-    all_data = glob.glob('data/PrEstExp_811_111418_122039.csv') # data directory
+    all_data = glob.glob('data/*.csv') # data directory
     numPar = len(all_data) # total no. of participants
     print(numPar,' participants were considered!')
     print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
@@ -180,10 +180,10 @@ def init_fit_RF():
         print("ALL PREP MEANS"+ str(allpredmeans[4]))
 
         ### Comment Chris: once you are at the relevant part of the assignment, replace the "=0" with a call to your function that calculates the BIC
-        BIC = 0
+        BIC = calcBic(n_data, n_para, minMSE)
         totBIC += BIC
 
-        print('BIC score of Sampling model:', BIC)
+        print('totalBIC score of Sampling model:', totBIC)
         # model 1,2 = Bayesian sampling (1:one sample size, 2:two sample sizes)
         # model 3   = Sampling/RF
         saved_location = 'fit_results/part_'+str(ipar)+'_model_3.pkl'
@@ -191,6 +191,12 @@ def init_fit_RF():
             pickle.dump({'fitResults':fit_all_data,
                          'predmean': allpredmeans,
                          'bic':BIC}, f)
+def calcBic(n, para, mse):
+    print("bic")
+    res = n * math.log(mse) + math.log(n) * (para + 1) + n *  math.log(2* math.pi ) + n
+    print(res)
+    return res
+
 
 
 ################################
