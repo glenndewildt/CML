@@ -221,17 +221,17 @@ def calcBic(n, para, mse):
 ################################
 global pData
 pData, queryOrder = clean_data()
-NS = [1,	2,	5,	10,	50,	100]
+NS = [	100]
 beta = [	0.1,	0.5,	1,	2,	5]
 data =[]
-for i in range(len(NS)):
-    for o in range(len(beta)):
-        data.append(init_fit_BS(NS[i],beta[o]))
-        print("test1" +str( data))
+# for i in range(len(NS)):
+#     for o in range(len(beta)):
+#         data.append(init_fit_BS(beta[o],NS[i]))
+#         print("test1" +str( data))
+#
+# print("results" + str(data))
 
-print("results" + str(data))
-
-savetxt('data.csv', data, delimiter=',')
+#savetxt('data100.csv', data, delimiter=',')
 
 ## Comment Chris: this code can be modified to access objects that have been stored in a "pickle" object.
 # objects = []
@@ -243,13 +243,18 @@ savetxt('data.csv', data, delimiter=',')
 #            break
 
 # create data
-x = [1, 2, 3, 4, 5]
-y = [3, 3, 3, 3, 3]
+beta = [	0.1,	0.5,	1,	2,	5]
+mse1 = [0.01582565635198937906, 0.01582566275640173714 ,0.01582566401933993908 ,0.01582563760548562695, 0.01582563832028664047]
+mse2 = [0.01635817195324237, 0.016358190476326338, 0.016358151324170143, 0.01635817168050467, 0.016358160427279632]
+mse3 = [0.01582565635198937906, 0.01582566275640173714 ,0.01582566401933993908 ,0.01582563760548562695, 0.01582563832028664047]
+mse4 = [0.01582565635198937906, 0.01582566275640173714 ,0.01582566401933993908 ,0.01582563760548562695, 0.01582563832028664047]
+mse5 = [0.01582565635198937906, 0.01582566275640173714 ,0.01582566401933993908 ,0.01582563760548562695, 0.01582563832028664047]
+mse5 = [0.01582565635198937906, 0.01582566275640173714 ,0.01582566401933993908 ,0.01582563760548562695, 0.01582563832028664047]
+
 
 # plot lines
-plt.plot(x, y, label="line 1", linestyle="-")
-plt.plot(y, x, label="line 2", linestyle="--")
-plt.plot(x, np.sin(x), label="curve 1", linestyle="-.")
-plt.plot(x, np.cos(x), label="curve 2", linestyle=":")
+plt.plot(beta, mse1, label="line 1", linestyle="-")
+plt.plot(beta, mse2, label="line 2", linestyle="--")
+
 plt.legend()
 plt.show()
